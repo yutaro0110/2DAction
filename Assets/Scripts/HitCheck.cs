@@ -40,9 +40,26 @@ public class HitCheck : MonoBehaviour
         GameObject master = transform.root.gameObject;
         HitBase hBase = master.GetComponent<HitBase>();
 
+        //攻撃側の処理
         if(type == HitType.Attack)
         {
-            
+            //HitBase(親)にアタックしたことを伝えている
+            hBase.result = HitBase.HitResult.AtkDone;
+            return;
+        }
+
+        //防御側の処理
+        if(type == HitType.Defence)
+        {
+
+            hBase.result = HitBase.HitResult.DefDone;
+            int atkPow = rivalHit.AtkPow;
+
+            hBase.nowHp -= atkPow;
+
+            //このあたりの処理は自分で考える
+
+
         }
 
     }

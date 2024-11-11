@@ -10,9 +10,9 @@ public class HitBase : MonoBehaviour
     public enum HitResult
     {
         None,
-        Atk,
-        Def,
-        Heal,
+        AtkDone,
+        DefDone,
+        HealDone,
         Die,
     }
 
