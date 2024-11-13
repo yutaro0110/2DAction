@@ -62,6 +62,11 @@ public class HitCheck : MonoBehaviour
 
         }
 
+        if(hBase.nowHp <= 0)
+        {
+            hBase.result = HitBase.HitResult.Die;
+        }
+
     }
 
 

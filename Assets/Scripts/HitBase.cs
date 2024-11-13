@@ -12,7 +12,6 @@ public class HitBase : MonoBehaviour
         None,
         AtkDone,
         DefDone,
-        HealDone,
         Die,
     }
 
