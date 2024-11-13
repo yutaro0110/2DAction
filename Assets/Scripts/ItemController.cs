@@ -8,6 +8,8 @@ public class ItemController : MonoBehaviour
 
     [SerializeField] item itemName;
 
+    [SerializeField] GameObject itemScore;
+
     enum item
     {
         Cherry = 100,
@@ -26,6 +28,7 @@ public class ItemController : MonoBehaviour
         if(hBase.result == HitBase.HitResult.AtkDone)
         {
             UIController.score = (int)itemName;
+            Instantiate(itemScore,transform.position,Quaternion.identity);
             //PlayerÇ…ìñÇΩÇ¡ÇΩÇÁçÌèú
             Destroy(gameObject);
         }

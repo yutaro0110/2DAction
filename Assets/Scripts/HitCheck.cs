@@ -59,6 +59,15 @@ public class HitCheck : MonoBehaviour
 
             //‚±‚Ì‚ ‚½‚è‚Ìˆ—‚ÍŽ©•ª‚Ål‚¦‚é
 
+            if(atkPow > 0)
+            {
+                if(hBase.nowHp < 0)
+                {
+                    hBase.nowHp = 0;
+                    hBase.result = HitBase.HitResult.Die;
+                }
+            }
+
 
         }
 
