@@ -27,7 +27,7 @@ public class ItemController : MonoBehaviour
         
         if(hBase.result == HitBase.HitResult.AtkDone)
         {
-            UIController.score = (int)itemName;
+            GameDirector.score = (int)itemName;
             Instantiate(itemScore,transform.position,Quaternion.identity);
             //PlayerÇ…ìñÇΩÇ¡ÇΩÇÁçÌèú
             Destroy(gameObject);

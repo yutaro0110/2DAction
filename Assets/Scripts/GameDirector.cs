@@ -4,19 +4,25 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class UIController : MonoBehaviour
+public class GameDirector : MonoBehaviour
 {
-    static UIController instance;
+    static GameDirector instance;
 
-    public static UIController Instance => instance;
+    public static GameDirector Instance => instance;
 
     public Text scoreText;
+    public Text lifeText;
+    public Text timeText;
 
     public static int score;
+    public static int life;
+    public static float time;
 
+    float maxTime = 100;
 
     private void Awake()
     {
+        time = maxTime;
         if (instance == null)
         {
             instance = this;
@@ -32,14 +38,23 @@ public class UIController : MonoBehaviour
     {
 
         Application.targetFrameRate = 60;
+        Debug.Log("start");
 
     }
 
-    
+
     void Update()
     {
 
+        if (Input.GetKeyDown(KeyCode.Return))
+        {
+            SceneManager.LoadScene("GameScene");
+        }
+
         scoreText.text = "score:" + score.ToString("D6");
+
+        time -= Time.deltaTime;
+        timeText.text = "Time:" + time.ToString("000");
 
     }
 }

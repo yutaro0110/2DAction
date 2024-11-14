@@ -13,7 +13,7 @@ public class EnemyController : MonoBehaviour
 
     int dir;
 
-    Vector3 offset = new Vector3(0.5f, 0, 0);
+    Vector3 offset = new Vector3(0.7f, 0, 0);
 
     void Start()
     {
@@ -27,14 +27,18 @@ public class EnemyController : MonoBehaviour
     
     void Update()
     {
-        
+
+        front();
+
+        Ene1Controller();
+
     }
 
     void front()
     {
 
         Vector3 center = transform.position;
-        Vector3 end = center + offset;
+        Vector3 end = center + offset * dir;
 
         RaycastHit2D hitResult = Physics2D.Linecast(center, end, GroundCheck);
 
@@ -43,7 +47,12 @@ public class EnemyController : MonoBehaviour
         if(hitResult.collider != null)
         {
             dir *= -1;
+            Vector3 scale = transform.localScale;
+            scale.x = dir;
+            transform.localScale = scale;
         }
+
+        
 
     }
 

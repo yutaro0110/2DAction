@@ -19,6 +19,9 @@ public class PlayerController : MonoBehaviour
 
     bool isGround;
     bool Goal;
+    bool move;
+
+    public float horizon;
 
     void Start()
     {
@@ -32,20 +35,24 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
 
+        //地面についてるか
         GroundCheck();
+
+        //左右キーを押してるか
+        moveCheck();
 
         //ジャンプ
         JumpControl();
-
-        //アニメーションと移動
-        AnimControl();
 
 
     }
 
     private void FixedUpdate()
     {
-        
+
+        //アニメーションと移動
+        AnimControl();
+
     }
 
     void GroundCheck()
@@ -79,6 +86,22 @@ public class PlayerController : MonoBehaviour
 
     }
 
+    void moveCheck()
+    {
+
+        horizon = Input.GetAxisRaw("Horizontal");
+
+        if(horizon != 0)
+        {
+            move = true;
+        }
+        else
+        {
+            move = false;
+        }
+
+    }
+
     void JumpControl()
     {
         
@@ -92,10 +115,7 @@ public class PlayerController : MonoBehaviour
 
 
     void AnimControl()
-    {
-        //※移動も兼ねる
-        float horizon = Input.GetAxisRaw("Horizontal");
-
+    {   
         //移動(変えるかも)
         transform.position += new Vector3(speed * horizon * Time.deltaTime, 0, 0);
 
