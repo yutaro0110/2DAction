@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class HitCheck : MonoBehaviour
@@ -19,6 +20,14 @@ public class HitCheck : MonoBehaviour
     public HitType type;
     public HitLayer layer;
 
+    private void Start()
+    {
+        if(type == HitType.Defence)
+        {
+            AtkPow = 0;
+        }
+    }
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
 
@@ -36,6 +45,8 @@ public class HitCheck : MonoBehaviour
         //敵と敵や自分が発射した弾に当たったとき
         if(type == rivalHit.type) { return; }
 
+        
+
         //HPがHitBaseに入ってるから取得しておく
         GameObject master = transform.root.gameObject;
         HitBase hBase = master.GetComponent<HitBase>();
@@ -45,14 +56,18 @@ public class HitCheck : MonoBehaviour
         {
             //HitBase(親)にアタックしたことを伝えている
             hBase.result = HitBase.HitResult.AtkDone;
+            //誰に当たったか
+            hBase.opponent = rivalHit.layer;
             return;
         }
 
         //防御側の処理
         if(type == HitType.Defence)
         {
-
+            //親にアタックしたことを伝える
             hBase.result = HitBase.HitResult.DefDone;
+            //誰に当たったか
+            hBase.opponent = rivalHit.layer; 
             int atkPow = rivalHit.AtkPow;
 
             hBase.nowHp -= atkPow;

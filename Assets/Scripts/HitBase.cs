@@ -15,7 +15,10 @@ public class HitBase : MonoBehaviour
         Die,
     }
 
+    
+
     public HitResult result;
+    public HitCheck.HitLayer opponent;
 
     private void Start()
     {

@@ -7,6 +7,8 @@ public class EnemyController : MonoBehaviour
 {
     public LayerMask GroundCheck;
 
+    HitBase hBase;
+
     Animator anim;
 
     float speed = 2.0f;
@@ -21,6 +23,7 @@ public class EnemyController : MonoBehaviour
         dir = -1;
         anim = GetComponent<Animator>();
         anim.Play("Ene1Run");
+        hBase = GetComponent<HitBase>();
 
     }
 
@@ -59,6 +62,15 @@ public class EnemyController : MonoBehaviour
     void Ene1Controller()
     {
         transform.position += new Vector3(speed * Time.deltaTime * dir, 0, 0);
+    }
+
+    void Hit()
+    {
+        if(hBase.opponent == HitCheck.HitLayer.Item)
+        {
+            //‚à‚µHP‚ª2ˆÈã‚Ì“G‚ğì‚é‚ÆHP‚ª‘S‰ñ•œ‚·‚é
+            hBase.nowHp = hBase.maxHp;
+        }
     }
 
 }

@@ -14,7 +14,7 @@ public class PlayerController : MonoBehaviour
 
     public LayerMask GroundLayer;
 
-    const float speed = 4f;
+    const float speed = 5.0f;
     [SerializeField] float JumpPow;
 
     bool isGround;
@@ -43,7 +43,6 @@ public class PlayerController : MonoBehaviour
 
         //ジャンプ
         JumpControl();
-
 
     }
 
@@ -100,14 +99,17 @@ public class PlayerController : MonoBehaviour
             move = false;
         }
 
+        
+
     }
 
     void JumpControl()
     {
         
-
+        //ジャンプ普通のupdateかFixedか決めるまたはFixedの方で反応がいいものを作る
         if (Input.GetButtonDown("Jump") && isGround == true)
         {
+            rb2d.velocity = Vector3.zero;
             rb2d.AddForce(Vector2.up * JumpPow);
         }
 
