@@ -12,10 +12,13 @@ public class PlayerController : MonoBehaviour
 
     BoxCollider2D bcol;
 
+    HitBase hBase;
+
     public LayerMask GroundLayer;
 
     const float speed = 5.0f;
     [SerializeField] float JumpPow;
+    float EnemyStep;
 
     bool isGround;
     bool Goal;
@@ -28,6 +31,7 @@ public class PlayerController : MonoBehaviour
         anim = GetComponent<Animator>();
         rb2d = GetComponent<Rigidbody2D>();
         bcol = GetComponent<BoxCollider2D>();
+        hBase = GetComponent<HitBase>();
         Goal = false;
     }
 
@@ -43,6 +47,9 @@ public class PlayerController : MonoBehaviour
 
         //ƒWƒƒƒ“ƒv
         JumpControl();
+
+        //“G‚ğ“¥‚ñ‚¾‚Ìˆ—
+        step();
 
     }
 
@@ -161,6 +168,22 @@ public class PlayerController : MonoBehaviour
             //ƒS[ƒ‹‚µ‚½
             Debug.Log("ƒS[ƒ‹");
         }
+    }
+
+    //“G‚ğ“¥‚ñ‚¾‚Ìˆ—
+    void step()
+    {
+
+        if(hBase.result == HitBase.HitResult.AtkDone && hBase.opponent == HitCheck.HitLayer.Enemy)
+        {
+            Vector3 vel = rb2d.velocity;
+            EnemyStep = Input.GetButton("Jump") ? 10 : 0;
+            vel.y = JumpPow / 100.0f + EnemyStep;
+            rb2d.velocity = vel;
+            hBase.result = HitBase.HitResult.None;
+            
+        }
+
     }
 
 }

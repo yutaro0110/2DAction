@@ -34,7 +34,7 @@ public class ItemController : MonoBehaviour
                 hBase.nowHp = hBase.maxHp;
                 return;
             }
-            GameDirector.score = (int)itemName;
+            GameDirector.score += (int)itemName;
             Instantiate(itemScore,transform.position,Quaternion.identity);
             //PlayerÇ…ìñÇΩÇ¡ÇΩÇÁçÌèú
             Destroy(gameObject);

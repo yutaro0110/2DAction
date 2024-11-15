@@ -36,7 +36,7 @@ public class GameDirector : MonoBehaviour
 
     void Start()
     {
-
+        score = 0;
         Application.targetFrameRate = 60;
         Debug.Log("start");
 

@@ -7,6 +7,10 @@ public class EnemyController : MonoBehaviour
 {
     public LayerMask GroundCheck;
 
+    Rigidbody2D rb2d;
+
+    BoxCollider2D bcol;
+
     HitBase hBase;
 
     Animator anim;
@@ -24,16 +28,30 @@ public class EnemyController : MonoBehaviour
         anim = GetComponent<Animator>();
         anim.Play("Ene1Run");
         hBase = GetComponent<HitBase>();
+        rb2d = GetComponent<Rigidbody2D>();
+        bcol = GetComponent<BoxCollider2D>();
 
     }
 
     
     void Update()
     {
+        //死んだときの処理
+        if (hBase.result == HitBase.HitResult.Die)
+        {
+            float deathJump = 10.0f;
+            rb2d.velocity = Vector2.up * deathJump;
+            bcol.enabled = false;
+            //子オブジェクトを破壊するのを追加する
+            //死んだときに上に上がるのを一度だけにする
+            Destroy(gameObject,2.0f);
+            
+        }
 
         front();
 
         Ene1Controller();
+
 
     }
 
@@ -72,5 +90,9 @@ public class EnemyController : MonoBehaviour
             hBase.nowHp = hBase.maxHp;
         }
     }
+
+    
+
+
 
 }
