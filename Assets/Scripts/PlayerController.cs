@@ -61,6 +61,8 @@ public class PlayerController : MonoBehaviour
 
     }
 
+
+    //地面についているかどうか
     void GroundCheck()
     {
         //falseにしたほうがよさそう(よくわからん)
@@ -81,6 +83,7 @@ public class PlayerController : MonoBehaviour
 
             if(hitResult.collider != null)
             {
+                Debug.Log(hitResult.collider);
                 //Debug.Log("地面");
                 isGround = true;
                 return;
@@ -92,6 +95,8 @@ public class PlayerController : MonoBehaviour
 
     }
 
+
+    //動くか動かないか
     void moveCheck()
     {
 
@@ -110,23 +115,30 @@ public class PlayerController : MonoBehaviour
 
     }
 
+
+    //ジャンプ
     void JumpControl()
     {
         
         //ジャンプ普通のupdateかFixedか決めるまたはFixedの方で反応がいいものを作る
         if (Input.GetButtonDown("Jump") && isGround == true)
         {
-            rb2d.velocity = Vector3.zero;
+            Vector2 vel = rb2d.velocity;
+            vel.y = 0;
+            rb2d.velocity = vel;
             rb2d.AddForce(Vector2.up * JumpPow);
         }
 
     }
 
 
+    //アニメーションと移動
     void AnimControl()
-    {   
+    {
         //移動(変えるかも)
-        transform.position += new Vector3(speed * horizon * Time.deltaTime, 0, 0);
+        rb2d.AddForce(Vector3.right * 20 * horizon);
+
+        //↑変更する急ブレーキや左右に動くことを少し考える
 
         if(isGround)
         {
@@ -160,7 +172,7 @@ public class PlayerController : MonoBehaviour
     }
 
     
-
+    //ゴールの時(変えるのもあり)
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if(collision.tag == "Goal")
