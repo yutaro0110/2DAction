@@ -16,7 +16,10 @@ public class PlayerController : MonoBehaviour
 
     public LayerMask GroundLayer;
 
-    const float speed = 5.0f;
+    const float walk = 3.0f;
+    const float normalRun = 5.0f;
+    const float dash = 10.0f;
+
     [SerializeField] float JumpPow;
     float EnemyStep;
 
@@ -136,11 +139,17 @@ public class PlayerController : MonoBehaviour
     void AnimControl()
     {
         //移動(変えるかも)
-        rb2d.AddForce(Vector3.right * 20 * horizon);
+        //段階をつけるifから
+        Vector2 v = rb2d.velocity;
+        v.x = 10 * horizon;
+        rb2d.velocity = v;
 
         //↑変更する急ブレーキや左右に動くことを少し考える
+        //ダッシュに段階をつける
+        //Bダッシュ(ボタンを押してダッシュ)をつける
+        //左右を押していないときにだんだんスピードを下げる処理を入れる
 
-        if(isGround)
+        if (isGround)
         {
             
             if(horizon != 0)
