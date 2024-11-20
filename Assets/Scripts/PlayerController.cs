@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using TreeEditor;
+using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 
@@ -28,6 +29,8 @@ public class PlayerController : MonoBehaviour
     bool move;
 
     public float horizon;
+
+    float runTime;
 
     void Start()
     {
@@ -140,8 +143,27 @@ public class PlayerController : MonoBehaviour
     {
         //移動(変えるかも)
         //段階をつけるifから
+
+        //↓あんまよくないけどしょうがないvelocity保存
         Vector2 v = rb2d.velocity;
-        v.x = 10 * horizon;
+        if (horizon != 0)
+        {
+            
+            if (Input.GetKeyDown(KeyCode.A))
+            {
+                v = rb2d.velocity;
+                v.x = dash * horizon;
+                runTime += Time.deltaTime;
+            }
+            else
+            {
+                v = rb2d.velocity;
+                v.x = walk * horizon;
+                runTime = 0;
+            }
+
+        }
+
         rb2d.velocity = v;
 
         //↑変更する急ブレーキや左右に動くことを少し考える
