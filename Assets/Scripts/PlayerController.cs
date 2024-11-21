@@ -7,6 +7,21 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
+    public enum slowDown
+    {
+        Normal = -5,
+        Ice = -1,
+    }
+
+    public enum moveCond
+    {
+        walk,
+        run,
+        dash,
+    }
+    int moveCondTemp;
+    float moveMax;
+
     Animator anim;
 
     Rigidbody2D rb2d;
@@ -15,12 +30,20 @@ public class PlayerController : MonoBehaviour
 
     HitBase hBase;
 
+    GameObject underGroundObj;
+
     public LayerMask GroundLayer;
 
+    //走る系統の変数
     const float walk = 3.0f;
-    const float normalRun = 5.0f;
-    const float dash = 10.0f;
+    const float run = 5.0f;
+    const float dash = 8.0f;
+    const float dashChangeTime = 1.0f;
+    bool flip;
+    bool dashMidst;
+    float runTime;
 
+    //ジャンプ系
     [SerializeField] float JumpPow;
     float EnemyStep;
 
@@ -29,8 +52,6 @@ public class PlayerController : MonoBehaviour
     bool move;
 
     public float horizon;
-
-    float runTime;
 
     void Start()
     {
@@ -90,6 +111,7 @@ public class PlayerController : MonoBehaviour
             if(hitResult.collider != null)
             {
                 Debug.Log(hitResult.collider);
+                underGroundObj = hitResult.collider.gameObject;
                 //Debug.Log("地面");
                 isGround = true;
                 return;
@@ -146,30 +168,93 @@ public class PlayerController : MonoBehaviour
 
         //↓あんまよくないけどしょうがないvelocity保存
         Vector2 v = rb2d.velocity;
+
+        //左右が押されていたら
         if (horizon != 0)
         {
-            
-            if (Input.GetKeyDown(KeyCode.A))
+
+            //Zでダッシュ
+            if (Input.GetKey(KeyCode.Z))
             {
-                v = rb2d.velocity;
-                v.x = dash * horizon;
-                runTime += Time.deltaTime;
+                //一段階目の速度を入れる
+                v.x = run * horizon;
+
+                //ダッシュを一定時間押しながら進んでいたら速度を上書きして二段階目の速度を入れる
+                runTime = (runTime + Time.deltaTime) > dashChangeTime ? dashChangeTime : runTime + Time.deltaTime;
+                if (runTime >= dashChangeTime)
+                {
+                    moveCondTemp = (int)moveCond.dash;
+                    v.x = dash * horizon;
+                    dashMidst = true;
+                }
+                else
+                {
+                    moveCondTemp = (int)moveCond.run;
+                }
+                
             }
             else
             {
-                v = rb2d.velocity;
+                //普通の歩き
                 v.x = walk * horizon;
                 runTime = 0;
+                moveCondTemp = (int)moveCond.walk;
             }
 
         }
+        else
+        {
+            //減速処理
+            runTime = 0;
 
+            //足場ごとに減速を調整(マジックナンバーenumが小数を扱ってないから)
+            switch (underGroundObj.tag)
+            {
+                case "Normal":
+                    v.x = v.x + ((float)slowDown.Normal / 10.0f) * transform.localScale.x;
+                    break;
+                case "Ice":
+                    v.x = v.x + ((float)slowDown.Ice / 10.0f) * transform.localScale.x;
+                    break;
+            }
+
+            //方向によりけりで最後の減速の部分を変える
+            if(transform.localScale.x == 1)
+            {
+                v.x = v.x < 0 ? 0 : v.x;
+            }
+            else
+            {
+                v.x = v.x > 0 ? 0 : v.x;
+            }
+        }
+
+        
+        //xのvelocityを初期化するのがダメ
         rb2d.velocity = v;
 
-        //↑変更する急ブレーキや左右に動くことを少し考える
-        //ダッシュに段階をつける
-        //Bダッシュ(ボタンを押してダッシュ)をつける
-        //左右を押していないときにだんだんスピードを下げる処理を入れる
+        switch (moveCondTemp)
+        {
+            case (int)moveCond.walk:
+                moveMax = walk;
+                break;
+            case (int)moveCond.run:
+                moveMax = run;
+                break;
+            case (int)moveCond.dash:
+                moveMax = dash;
+                break;
+        }
+
+        //急ブレーキ
+        //移動方向を反転させるときに猶予を与えて猶予の間に反転の入力が行われたらスピードMAXのまま動く
+        //床(地面)ごとに減速を変える(すべるようにしたり)
+        //反転時はboolで判断したい
+        //反転したら速度がなくなってから動き出す
+        //反転しているタイミングは操作を聞かなくする?
+        //空中にいるときどうするか
+        //ダッシュから歩きに移行したときどうするか
+        //すべることはできているが反転したときに普通に動けるのを治す
 
         if (isGround)
         {
