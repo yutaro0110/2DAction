@@ -169,81 +169,102 @@ public class PlayerController : MonoBehaviour
         //↓あんまよくないけどしょうがないvelocity保存
         Vector2 v = rb2d.velocity;
 
-        //左右が押されていたら
-        if (horizon != 0)
-        {
 
-            //Zでダッシュ
-            if (Input.GetKey(KeyCode.Z))
-            {
-                //一段階目の速度を入れる
-                v.x = run * horizon;
+        ////左右が押されていたら
+        //if (horizon != 0)
+        //{
 
-                //ダッシュを一定時間押しながら進んでいたら速度を上書きして二段階目の速度を入れる
-                runTime = (runTime + Time.deltaTime) > dashChangeTime ? dashChangeTime : runTime + Time.deltaTime;
-                if (runTime >= dashChangeTime)
-                {
-                    moveCondTemp = (int)moveCond.dash;
-                    v.x = dash * horizon;
-                    dashMidst = true;
-                }
-                else
-                {
-                    moveCondTemp = (int)moveCond.run;
-                }
+        //    //Zでダッシュ
+        //    if (Input.GetKey(KeyCode.Z))
+        //    {
+        //        //一段階目の速度を入れる
+        //        v.x = run * horizon;
+
+        //        //ダッシュを一定時間押しながら進んでいたら速度を上書きして二段階目の速度を入れる
+        //        runTime = (runTime + Time.deltaTime) > dashChangeTime ? dashChangeTime : runTime + Time.deltaTime;//走っている時間計測
+        //        if (runTime >= dashChangeTime)
+        //        {
+        //            moveCondTemp = (int)moveCond.dash;
+        //            v.x = dash * horizon;
+        //            dashMidst = true;
+        //        }
+        //        else
+        //        {
+        //            moveCondTemp = (int)moveCond.run;
+        //        }
                 
-            }
-            else
-            {
-                //普通の歩き
-                v.x = walk * horizon;
-                runTime = 0;
-                moveCondTemp = (int)moveCond.walk;
-            }
+        //    }
+        //    else
+        //    {
+        //        //普通の歩き
+        //        v.x = walk * horizon;
+        //        runTime = 0;
+        //        moveCondTemp = (int)moveCond.walk;
+        //    }
 
-        }
-        else
-        {
-            //減速処理
-            runTime = 0;
+        //}
+        //else
+        //{
+        //    //減速処理
+        //    runTime = 0;
 
-            //足場ごとに減速を調整(マジックナンバーenumが小数を扱ってないから)
-            switch (underGroundObj.tag)
-            {
-                case "Normal":
-                    v.x = v.x + ((float)slowDown.Normal / 10.0f) * transform.localScale.x;
-                    break;
-                case "Ice":
-                    v.x = v.x + ((float)slowDown.Ice / 10.0f) * transform.localScale.x;
-                    break;
-            }
+            
+        //    if(rb2d.velocity.x != 0)
+        //    {
+        //        //足場ごとに減速を調整(マジックナンバーenumが小数を扱ってないから)
+        //        switch (underGroundObj.tag)
+        //        {
+        //            case "Normal":
+        //                v.x = v.x + (((float)slowDown.Normal / 10.0f) * (rb2d.velocity.x / Mathf.Abs(rb2d.velocity.x) * 1.0f));
+        //                break;
+        //            case "Ice":
+        //                v.x = v.x + (((float)slowDown.Ice / 10.0f) * (rb2d.velocity.x / Mathf.Abs(rb2d.velocity.x) * 1.0f));
+        //                break;
+        //        }
+        //    }
 
-            //方向によりけりで最後の減速の部分を変える
-            if(transform.localScale.x == 1)
-            {
-                v.x = v.x < 0 ? 0 : v.x;
-            }
-            else
-            {
-                v.x = v.x > 0 ? 0 : v.x;
-            }
-        }
+        //    ////方向によりけりで最後の減速の部分を変える(絶対にダメ)
+        //    //if(transform.localScale.x == 1)
+        //    //{
+        //    //    v.x = v.x < 0 ? 0 : v.x;
+        //    //}
+        //    //else
+        //    //{
+        //    //    v.x = v.x > 0 ? 0 : v.x;
+        //    //}
+        //}
 
         
-        //xのvelocityを初期化するのがダメ
-        rb2d.velocity = v;
+        
+        ////xのvelocityを初期化するのがダメ+=にしたい
+        //rb2d.velocity = v;
+        //rb2d.AddForce(new Vector2(slow, 0));
 
-        switch (moveCondTemp)
+        //if(rb2d.velocity.x < 0.01f)
+        //{
+        //    rb2d.velocity = new Vector2(0, rb2d.velocity.y);
+        //}
+
+        //switch (moveCondTemp)
+        //{
+        //    case (int)moveCond.walk:
+        //        moveMax = walk;
+        //        break;
+        //    case (int)moveCond.run:
+        //        moveMax = run;
+        //        break;
+        //    case (int)moveCond.dash:
+        //        moveMax = dash;
+        //        break;
+        //}
+
+        //移動処理作り直し
+
+        if(horizon != 0)
         {
-            case (int)moveCond.walk:
-                moveMax = walk;
-                break;
-            case (int)moveCond.run:
-                moveMax = run;
-                break;
-            case (int)moveCond.dash:
-                moveMax = dash;
-                break;
+
+            
+
         }
 
         //急ブレーキ
@@ -251,10 +272,11 @@ public class PlayerController : MonoBehaviour
         //床(地面)ごとに減速を変える(すべるようにしたり)
         //反転時はboolで判断したい
         //反転したら速度がなくなってから動き出す
-        //反転しているタイミングは操作を聞かなくする?
+        //反転しているタイミングは操作をきかなくする?
         //空中にいるときどうするか
         //ダッシュから歩きに移行したときどうするか
         //すべることはできているが反転したときに普通に動けるのを治す
+        //「velocityの反対方向へ入力した時」という処理を入れる?
 
         if (isGround)
         {
