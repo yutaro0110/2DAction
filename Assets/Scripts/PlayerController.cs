@@ -140,7 +140,7 @@ public class PlayerController : MonoBehaviour
     void moveCheck()
     {
 
-        horizon = Input.GetAxisRaw("Horizontal");
+        horizon = Input.GetAxisRaw("Horizontal"); //コントローラーにするときに確認
 
         if(horizon != 0)
         {
@@ -161,7 +161,7 @@ public class PlayerController : MonoBehaviour
     {
         
         //ジャンプ普通のupdateかFixedか決めるまたはFixedの方で反応がいいものを作る
-        if (Input.GetButtonDown("Jump") && isGround == true)
+        if (Input.GetButtonDown("Jump") && isGround == true) //コントローラーにするときに確認
         {
             Vector2 vel = rb2d.velocity;
             vel.y = 0;
@@ -186,7 +186,7 @@ public class PlayerController : MonoBehaviour
             //移動状態(走りなど)を確認
             ver = rb2d.velocity;
             moveCondTemp = (int)moveCond.walk;
-            if (Input.GetKey(KeyCode.Z))
+            if (Input.GetKey(KeyCode.Z))  //コントローラーにするときに変える
             {
                 if(horizon == rb2d.velocity.x / Mathf.Abs(rb2d.velocity.x) || rb2d.velocity.x == 0)
                 {

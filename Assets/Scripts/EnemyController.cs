@@ -36,15 +36,23 @@ public class EnemyController : MonoBehaviour
     
     void Update()
     {
+        if (bcol.enabled == false) return;
         //死んだときの処理
-        if (hBase.result == HitBase.HitResult.Die)
+        if (hBase.result == HitBase.HitResult.Die && bcol.enabled == true)
         {
             float deathJump = 10.0f;
             rb2d.velocity = Vector2.up * deathJump;
             bcol.enabled = false;
             //子オブジェクトを破壊するのを追加する
             //死んだときに上に上がるのを一度だけにする
+
+            foreach(Transform child in gameObject.transform)
+            {
+                Destroy(child.gameObject);
+            }
+
             Destroy(gameObject,2.0f);
+            
             
         }
 
@@ -84,15 +92,12 @@ public class EnemyController : MonoBehaviour
 
     void Hit()
     {
-        if(hBase.opponent == HitCheck.HitLayer.Item)
+        if (hBase.opponent == HitCheck.HitLayer.Item)
         {
             //もしHPが2以上の敵を作るとHPが全回復する
             hBase.nowHp = hBase.maxHp;
         }
     }
-
-    
-
 
 
 }

@@ -29,7 +29,7 @@ public class ItemController : MonoBehaviour
         {
             if(hBase.opponent == HitCheck.HitLayer.Enemy)
             {
-                Debug.Log("“G‚É“–‚½‚Á‚½");
+                //Debug.Log("“G‚É“–‚½‚Á‚½");
                 hBase.result = HitBase.HitResult.None;
                 hBase.nowHp = hBase.maxHp;
                 return;
