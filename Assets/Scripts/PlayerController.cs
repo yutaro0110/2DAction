@@ -9,8 +9,8 @@ public class PlayerController : MonoBehaviour
 {
     public enum slowDown
     {
-        Normal = -5,
-        Ice = -1,
+        Normal = 15,
+        Ice = 1,
     }
 
     public enum moveCond
@@ -110,7 +110,7 @@ public class PlayerController : MonoBehaviour
 
             if(hitResult.collider != null)
             {
-                Debug.Log(hitResult.collider);
+                //Debug.Log(hitResult.collider);
                 underGroundObj = hitResult.collider.gameObject;
                 //Debug.Log("地面");
                 isGround = true;
@@ -166,8 +166,8 @@ public class PlayerController : MonoBehaviour
         //移動(変えるかも)
         //段階をつけるifから
 
-        //↓あんまよくないけどしょうがないvelocity保存
-        Vector2 v = rb2d.velocity;
+        ////↓あんまよくないけどしょうがないvelocity保存
+        //Vector2 v = rb2d.velocity;
 
 
         ////左右が押されていたら
@@ -192,7 +192,7 @@ public class PlayerController : MonoBehaviour
         //        {
         //            moveCondTemp = (int)moveCond.run;
         //        }
-                
+
         //    }
         //    else
         //    {
@@ -208,7 +208,7 @@ public class PlayerController : MonoBehaviour
         //    //減速処理
         //    runTime = 0;
 
-            
+
         //    if(rb2d.velocity.x != 0)
         //    {
         //        //足場ごとに減速を調整(マジックナンバーenumが小数を扱ってないから)
@@ -234,8 +234,8 @@ public class PlayerController : MonoBehaviour
         //    //}
         //}
 
-        
-        
+
+
         ////xのvelocityを初期化するのがダメ+=にしたい
         //rb2d.velocity = v;
         //rb2d.AddForce(new Vector2(slow, 0));
@@ -260,11 +260,83 @@ public class PlayerController : MonoBehaviour
 
         //移動処理作り直し
 
+        Vector2 ver = Vector2.zero;
+
         if(horizon != 0)
         {
+            //移動状態(走りなど)を確認
+            ver = rb2d.velocity;
+            moveCondTemp = (int)moveCond.walk;
+            if (Input.GetKey(KeyCode.Z))
+            {
+                if(runTime < dashChangeTime)
+                {
+                    runTime += Time.deltaTime;
+                    moveCondTemp = (int)moveCond.run;
+                }
+                else
+                {
+                    moveCondTemp = (int)moveCond.dash;
+                    runTime = dashChangeTime;
+                }
+            }
 
+            //移動
+            if(horizon == rb2d.velocity.x / Mathf.Abs(rb2d.velocity.x) || rb2d.velocity.x == 0) //velocityと反対に向かったら
+            {
+                //移動
+                switch (moveCondTemp)
+                {
+                    case 0:
+                        runTime = 0;
+                        ver.x = horizon * walk;
+                        break;
+                    case 1:
+                        ver.x = horizon * run;
+                        break;
+                    case 2:
+                        ver.x = horizon * dash;
+                        break;
+                }
+                rb2d.velocity = ver;
+            }
+            else
+            {
+                
+                //反転処理
+
+
+            }
             
+            
+        }
+        else
+        {
+            //減速
+            runTime = 0;
+            if(Mathf.Abs(rb2d.velocity.x) > 0.5f)
+            {
+                switch (underGroundObj.tag)//床の種類によって滑りを変える
+                {
+                    case "Normal":
+                        ver.x = (rb2d.velocity.x / Mathf.Abs(rb2d.velocity.x) * -1.0f) * (int)slowDown.Normal;
+                        Debug.Log(ver.x);
+                        break;
+                    case "Ice":
+                        ver.x = (rb2d.velocity.x / Mathf.Abs(rb2d.velocity.x) * -1.0f) * (int)slowDown.Ice;
+                        Debug.Log(ver.x);
+                        break;
+                }
 
+                rb2d.AddForce(ver);
+            }
+            else
+            {
+                //移動量が小さくなったら0にする
+                ver = rb2d.velocity;
+                ver.x = 0;
+                rb2d.velocity = ver;
+            }
         }
 
         //急ブレーキ
