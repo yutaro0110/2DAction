@@ -287,9 +287,9 @@ public class PlayerController : MonoBehaviour
         }
 
         //急ブレーキ
-        //空中にいるときどうするか
         //「velocityの反対方向へ入力した時」という処理を入れる?
         //猶予フレームの追加(コントローラーで反転時のフレームを計測する)
+        //歩きの時の反転を小さくしてもいい
 
         if (isGround)
         {
