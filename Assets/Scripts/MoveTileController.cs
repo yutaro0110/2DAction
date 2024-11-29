@@ -7,7 +7,7 @@ public class MoveTileController : MonoBehaviour
     
     public enum MoveType
     {
-        None,
+        None = 0,
         horizon,
         vertical,
         circle,
@@ -15,9 +15,33 @@ public class MoveTileController : MonoBehaviour
 
     public MoveType mType;
 
+    Vector3 ver;
+
+    float offset;
+    public float length;
+
     void Start()
     {
+
+        offset = length / 2.0f;
         
+
+        switch ((int)mType)
+        {
+            case 1:
+                ver = transform.position;
+                break;
+            case 0:
+                ver = transform.position;
+                break;
+            case 3:
+
+                break;
+            default:
+                Debug.Log("ê›íËÇµÇƒÇ»Ç¢");
+                break;
+        }
+
     }
 
     
@@ -27,13 +51,13 @@ public class MoveTileController : MonoBehaviour
         switch ((int)mType)
         {
             case 1:
-
+                horizonControl();
                 break;
             case 2:
-
+                verticalControl();
                 break;
             case 3:
-
+                circleControl();
                 break;
             default:
                 break;
@@ -43,7 +67,8 @@ public class MoveTileController : MonoBehaviour
 
     void horizonControl()
     {
-
+        ver.x = Mathf.PingPong(Time.time, length) - offset;
+        transform.position = ver;
     }
 
     void verticalControl()
