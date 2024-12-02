@@ -43,7 +43,6 @@ public class EnemyController : MonoBehaviour
             float deathJump = 10.0f;
             rb2d.velocity = Vector2.up * deathJump;
             bcol.enabled = false;
-            //子オブジェクトを破壊するのを追加する
             //死んだときに上に上がるのを一度だけにする
 
             foreach(Transform child in gameObject.transform)

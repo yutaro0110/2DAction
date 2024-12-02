@@ -2518,6 +2518,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mType: 1
   length: 2
+  time: 3
 --- !u!1 &1763445417
 GameObject:
   m_ObjectHideFlags: 0
