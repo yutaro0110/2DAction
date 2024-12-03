@@ -54,11 +54,15 @@ public class PlayerController : MonoBehaviour
 
     //ジャンプ系
     [SerializeField] float JumpPow;
+    float dieJump;
     float EnemyStep;
 
+
+    //その他
     bool isGround;
     bool Goal;
     bool move;
+    bool die;
 
     public float horizon;
 
@@ -69,11 +73,15 @@ public class PlayerController : MonoBehaviour
         bcol = GetComponent<BoxCollider2D>();
         hBase = GetComponent<HitBase>();
         Goal = false;
+        die = false;
+        dieJump = JumpPow + 100.0f;
     }
 
     
     void Update()
     {
+
+        if (die) return;
 
         //地面についてるか
         GroundCheck();
@@ -86,6 +94,8 @@ public class PlayerController : MonoBehaviour
 
         //敵を踏んだ時の処理
         step();
+
+        DieControl();
 
     }
 
@@ -287,6 +297,7 @@ public class PlayerController : MonoBehaviour
         }
 
         //急ブレーキ
+        //目の前に壁があったら走れなくする(そっちのほうに動けなくする)
         //「velocityの反対方向へ入力した時」という処理を入れる?
         //猶予フレームの追加(コントローラーで反転時のフレームを計測する)
         //歩きの時の反転を小さくしてもいい
@@ -345,6 +356,20 @@ public class PlayerController : MonoBehaviour
             rb2d.velocity = vel;
             hBase.result = HitBase.HitResult.None;
             
+        }
+
+    }
+
+    void DieControl()
+    {
+
+        Vector2 min = Camera.main.ViewportToWorldPoint(Vector2.zero);
+
+        if(transform.position.y < min.y - 2.5f)
+        {
+            rb2d.velocity = Vector2.zero;
+            rb2d.AddForce(Vector2.up * dieJump);
+            die = true;
         }
 
     }

@@ -17,6 +17,7 @@ public class MoveTileController : MonoBehaviour
     [SerializeField] MoveType mType;
 
     Vector3 ver;
+    Vector3 startPos;
 
     float offset;
     [SerializeField] float length;
@@ -33,13 +34,13 @@ public class MoveTileController : MonoBehaviour
         switch ((int)mType)
         {
             case 1:
-                ver = transform.position;
+                startPos = transform.position;
                 break;
             case 0:
-                ver = transform.position;
+                startPos = transform.position;
                 break;
             case 3:
-                ver = transform.position;
+                startPos = transform.position;
                 break;
             case 4:
                 
@@ -76,17 +77,17 @@ public class MoveTileController : MonoBehaviour
     {
         t = 4.0f * length * (Time.time / time + shift);
         ver.x = Mathf.PingPong(t, 2.0f * length) - offset;
-        transform.position = ver;
+        transform.position = ver + startPos;
     }
 
     void verticalControl()
     {
         t = 4.0f * length * (Time.time / time + shift);
-        ver.y = Mathf.PingPong(t, 2.0f * length) - offset;
-        transform.position = ver;
+        ver.y = Mathf.PingPong(t, 2.0f * length) - offset + transform.position.x;
+        transform.position = ver + startPos;
     }
 
-    void leanControl() //ŽÎ‚ß
+    void leanControl() //ŽÎ‚ß(‚È‚ñ‚Æ‚È‚­‚Å‚Å‚«‚½‚¾‚¯)
     {
         t = 4.0f * length * (Time.time / time + shift);
         ver.x = Mathf.PingPong(t, 2.0f * length) - offset;
@@ -94,7 +95,7 @@ public class MoveTileController : MonoBehaviour
         t = 4.0f * length * (Time.time / time + shift);
         ver.y = Mathf.PingPong(t, 2.0f * length) - offset;
 
-        transform.position = ver;
+        transform.position = ver + startPos;
     }
 
     void circleControl()
