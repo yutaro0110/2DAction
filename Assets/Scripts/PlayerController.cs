@@ -51,6 +51,8 @@ public class PlayerController : MonoBehaviour
     bool flip;
     bool dashMidst;
     float runTime;
+    bool frontGround;
+
 
     //ジャンプ系
     [SerializeField] float JumpPow;
@@ -193,79 +195,100 @@ public class PlayerController : MonoBehaviour
 
         if(horizon != 0)
         {
-            //移動状態(走りなど)を確認
-            ver = rb2d.velocity;
-            moveCondTemp = (int)moveCond.walk;
-            if (Input.GetKey(KeyCode.Z))  //コントローラーにするときに変える
+            Vector3 offset = new Vector3(transform.localScale.x * 0.7f, -0.3f, 0);
+            Vector3 center = transform.position;
+            Vector3 end = center + offset;
+            center.y += offset.y;
+
+            RaycastHit2D RunResult = Physics2D.Linecast(center, end, GroundLayer);
+
+            Debug.DrawLine(center, end, Color.red);
+
+            if (RunResult.collider == null)
             {
-                if(horizon == rb2d.velocity.x / Mathf.Abs(rb2d.velocity.x) || rb2d.velocity.x == 0)
+                frontGround = false;
+                //移動状態(走りなど)を確認
+                ver = rb2d.velocity;
+                moveCondTemp = (int)moveCond.walk;
+                if (Input.GetKey(KeyCode.Z))  //コントローラーにするときに変える
                 {
-                    if (runTime < dashChangeTime)
+                    if (horizon == rb2d.velocity.x / Mathf.Abs(rb2d.velocity.x) || rb2d.velocity.x == 0)
                     {
-                        if (isGround)
+                        if (runTime < dashChangeTime)
                         {
-                            runTime += Time.deltaTime;
-                        }
-                        moveCondTemp = (int)moveCond.run;
-                    }
-                    else
-                    {
-                        moveCondTemp = (int)moveCond.dash;
-                        runTime = dashChangeTime;
-                    }
-                }
-
-            }
-
-            //移動
-            if(horizon == rb2d.velocity.x / Mathf.Abs(rb2d.velocity.x) || rb2d.velocity.x == 0) //velocityと反対に向かったら
-            {
-                //移動
-                switch (moveCondTemp)
-                {
-                    case 0:
-                        runTime = 0;
-                        ver.x = horizon * walk;
-                        break;
-                    case 1:
-                        ver.x = horizon * run;
-                        break;
-                    case 2:
-                        ver.x = horizon * dash;
-                        break;
-                }
-                rb2d.velocity = ver;
-            }
-            else
-            {
-
-                //反転処理
-                switch (underGroundObj.tag)//床の種類によって滑りを変える
-                {
-                    //床の確認
-                    case "Normal":
-                        ver.x = (rb2d.velocity.x / Mathf.Abs(rb2d.velocity.x) * -1.0f) * (int)slowDownFlip.Normal;
-                        break;
-                    case "Ice":
-                        //氷の時はvelocityの値で減速の値を決める
-                        if(Mathf.Abs(rb2d.velocity.x) > run)
-                        {
-                            ver.x = (rb2d.velocity.x / Mathf.Abs(rb2d.velocity.x) * -1.0f) * (int)slowDownFlip.IceDash;
-                        }
-                        else if(Mathf.Abs(rb2d.velocity.x) > walk)
-                        {
-                            ver.x = (rb2d.velocity.x / Mathf.Abs(rb2d.velocity.x) * -1.0f) * (int)slowDownFlip.IceRun;
+                            if (isGround)
+                            {
+                                runTime += Time.deltaTime;
+                            }
+                            moveCondTemp = (int)moveCond.run;
                         }
                         else
                         {
-                            ver.x = (rb2d.velocity.x / Mathf.Abs(rb2d.velocity.x) * -1.0f) * (int)slowDownFlip.IceWalk;
+                            moveCondTemp = (int)moveCond.dash;
+                            runTime = dashChangeTime;
                         }
-                        
-                        break;
+                    }
+
                 }
 
-                rb2d.AddForce(ver);
+                //移動
+                if (horizon == rb2d.velocity.x / Mathf.Abs(rb2d.velocity.x) || rb2d.velocity.x == 0) //velocityと反対に向かったら
+                {
+                    //移動
+                    switch (moveCondTemp)
+                    {
+                        case 0:
+                            runTime = 0;
+                            ver.x = horizon * walk;
+                            break;
+                        case 1:
+                            ver.x = horizon * run;
+                            break;
+                        case 2:
+                            ver.x = horizon * dash;
+                            break;
+                    }
+                    rb2d.velocity = ver;
+                }
+                else
+                {
+
+                    //反転処理
+                    switch (underGroundObj.tag)//床の種類によって滑りを変える
+                    {
+                        //床の確認
+                        case "Normal":
+                            ver.x = (rb2d.velocity.x / Mathf.Abs(rb2d.velocity.x) * -1.0f) * (int)slowDownFlip.Normal;
+                            break;
+                        case "Ice":
+                            //氷の時はvelocityの値で減速の値を決める
+                            if (Mathf.Abs(rb2d.velocity.x) > run)
+                            {
+                                ver.x = (rb2d.velocity.x / Mathf.Abs(rb2d.velocity.x) * -1.0f) * (int)slowDownFlip.IceDash;
+                            }
+                            else if (Mathf.Abs(rb2d.velocity.x) > walk)
+                            {
+                                ver.x = (rb2d.velocity.x / Mathf.Abs(rb2d.velocity.x) * -1.0f) * (int)slowDownFlip.IceRun;
+                            }
+                            else
+                            {
+                                ver.x = (rb2d.velocity.x / Mathf.Abs(rb2d.velocity.x) * -1.0f) * (int)slowDownFlip.IceWalk;
+                            }
+
+                            break;
+                    }
+
+                    rb2d.AddForce(ver);
+                }
             }
+            else
+            {
+                runTime = 0;
+                frontGround = true;
+            }
+            
+
+            
             
             
         }
@@ -305,7 +328,7 @@ public class PlayerController : MonoBehaviour
         if (isGround)
         {
             
-            if(horizon != 0)
+            if(horizon != 0 && !frontGround)
             {
                 anim.Play("PLRun");
             }
@@ -365,13 +388,37 @@ public class PlayerController : MonoBehaviour
 
         Vector2 min = Camera.main.ViewportToWorldPoint(Vector2.zero);
 
-        if(transform.position.y < min.y - 2.5f)
+        if(transform.position.y < min.y)
         {
-            rb2d.velocity = Vector2.zero;
-            rb2d.AddForce(Vector2.up * dieJump);
-            die = true;
+            Debug.Log("コルーチン生成してる");
+            StartCoroutine(DeathCoroutine());
         }
 
+    }
+
+    IEnumerator DeathCoroutine()
+    {
+        
+            //死んだ
+            die = true;
+            rb2d.velocity = Vector2.zero;
+
+            //重力なくす(重力保存)
+            float g = rb2d.gravityScale;
+            rb2d.gravityScale = 0;
+
+            //待機
+            yield return new WaitForSeconds(0.5f);
+
+            //重力戻す
+            rb2d.gravityScale = g;
+            //ジャンプ
+            rb2d.AddForce(Vector2.up * dieJump);
+            hBase.nowHp = 0;
+
+            StopCoroutine(DeathCoroutine());
+            yield break;
+        
     }
 
 }
