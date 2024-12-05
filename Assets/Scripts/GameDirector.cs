@@ -37,8 +37,8 @@ public class GameDirector : MonoBehaviour
     void Start()
     {
         score = 0;
+        life = 5;
         Application.targetFrameRate = 60;
-
     }
 
 
@@ -51,9 +51,20 @@ public class GameDirector : MonoBehaviour
         }
 
         scoreText.text = "score:" + score.ToString("D6");
+        lifeText.text = "Life:" + life.ToString("D2");
 
         time -= Time.deltaTime;
         timeText.text = "Time:" + time.ToString("000");
+
+        if (SceneManager.GetActiveScene().name == "DeathScene" || SceneManager.GetActiveScene().name == "TitleScene")
+        {
+            gameObject.SetActive(false);
+        }
+        else
+        {
+            gameObject.SetActive(true);
+        }
+        
 
     }
 }
