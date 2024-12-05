@@ -222,7 +222,7 @@ RectTransform:
   - {fileID: 823635257}
   - {fileID: 512344261}
   - {fileID: 1947360131}
-  m_Father: {fileID: 1686708320}
+  m_Father: {fileID: 1388919494}
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -7237,6 +7237,38 @@ Tilemap:
     e31: 0
     e32: 0
     e33: 1
+--- !u!1 &1388919493
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1388919494}
+  m_Layer: 0
+  m_Name: GameObject
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1388919494
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1388919493}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -80.481094, y: -1038.301, z: -0.22312991}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 473034901}
+  m_Father: {fileID: 1686708320}
+  m_RootOrder: -1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1686708318
 GameObject:
   m_ObjectHideFlags: 0
@@ -7269,6 +7301,7 @@ MonoBehaviour:
   scoreText: {fileID: 823635261}
   lifeText: {fileID: 512344264}
   timeText: {fileID: 1947360128}
+  UI: {fileID: 1388919493}
 --- !u!4 &1686708320
 Transform:
   m_ObjectHideFlags: 0
@@ -7281,7 +7314,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 473034901}
+  - {fileID: 1388919494}
   m_Father: {fileID: 0}
   m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

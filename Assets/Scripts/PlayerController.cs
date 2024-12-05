@@ -4,6 +4,7 @@ using TreeEditor;
 using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviour
 {
@@ -65,6 +66,7 @@ public class PlayerController : MonoBehaviour
     bool Goal;
     bool move;
     bool die;
+    Vector3 stop; 
 
     public float horizon;
 
@@ -83,7 +85,16 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
 
-        if (die) return;
+        if (Goal) return;
+
+        if (die)
+        {
+            DeathControl();
+            stop.y = transform.position.y;
+            transform.position = stop;
+
+            return;
+        }
 
         //地面についてるか
         GroundCheck();
@@ -360,10 +371,15 @@ public class PlayerController : MonoBehaviour
     //ゴールの時(変えるのもあり)
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if(collision.tag == "Goal")
+        if (Goal) return;
+
+        if (collision.tag == "Goal")
         {
             //ゴールした時
             Debug.Log("ゴール");
+            Goal = true;
+            GameDirector.nowStage++;
+            SceneManager.LoadScene(GameDirector.nowStage);
         }
     }
 
@@ -390,7 +406,6 @@ public class PlayerController : MonoBehaviour
 
         if(transform.position.y < min.y)
         {
-            Debug.Log("コルーチン生成してる");
             StartCoroutine(DeathCoroutine());
         }
 
@@ -399,26 +414,37 @@ public class PlayerController : MonoBehaviour
     IEnumerator DeathCoroutine()
     {
         
-            //死んだ
-            die = true;
-            rb2d.velocity = Vector2.zero;
+        //死んだ
+        die = true;
+        stop = transform.position;
+        rb2d.velocity = Vector2.zero;
 
-            //重力なくす(重力保存)
-            float g = rb2d.gravityScale;
-            rb2d.gravityScale = 0;
+        //重力なくす(重力保存)
+        float g = rb2d.gravityScale;
+        rb2d.gravityScale = 0;
 
-            //待機
-            yield return new WaitForSeconds(0.5f);
+        //待機
+        yield return new WaitForSeconds(0.5f);
 
-            //重力戻す
-            rb2d.gravityScale = g;
-            //ジャンプ
-            rb2d.AddForce(Vector2.up * dieJump);
-            hBase.nowHp = 0;
+        //重力戻す
+        rb2d.gravityScale = g;
+        //ジャンプ
+        rb2d.AddForce(Vector2.up * dieJump);
+        hBase.nowHp = 0;
 
-            StopCoroutine(DeathCoroutine());
-            yield break;
+        stop.x = transform.position.x;
+
+        StopCoroutine(DeathCoroutine());
+        yield break;
         
+    }
+
+    void DeathControl()
+    {
+        if (Input.GetKeyDown(KeyCode.Return))
+        {
+            SceneManager.LoadScene(GameDirector.nowStage);
+        }
     }
 
 }

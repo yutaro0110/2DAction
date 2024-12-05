@@ -154,7 +154,7 @@ RectTransform:
   - {fileID: 438116688}
   - {fileID: 736798527}
   - {fileID: 612540454}
-  m_Father: {fileID: 516001542}
+  m_Father: {fileID: 440648851}
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -333,6 +333,38 @@ MonoBehaviour:
     m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: score:000000
+--- !u!1 &440648850
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 440648851}
+  m_Layer: 0
+  m_Name: GameObject
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &440648851
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 440648850}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 146158760}
+  m_Father: {fileID: 516001542}
+  m_RootOrder: -1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &516001540
 GameObject:
   m_ObjectHideFlags: 0
@@ -365,6 +397,7 @@ MonoBehaviour:
   scoreText: {fileID: 438116692}
   lifeText: {fileID: 736798530}
   timeText: {fileID: 612540451}
+  UI: {fileID: 440648850}
 --- !u!4 &516001542
 Transform:
   m_ObjectHideFlags: 0
@@ -377,7 +410,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 146158760}
+  - {fileID: 440648851}
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -674,7 +707,7 @@ GameObject:
   - component: {fileID: 936455644}
   - component: {fileID: 936455643}
   m_Layer: 0
-  m_Name: Triangle
+  m_Name: Arrow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1181,4 +1214,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e1f6d5990ec34364ca306df13921561d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  arrow: {fileID: 0}
+  arrow: {fileID: 936455642}

@@ -10,15 +10,21 @@ public class GameDirector : MonoBehaviour
 
     public static GameDirector Instance => instance;
 
-    public Text scoreText;
-    public Text lifeText;
-    public Text timeText;
-
+    //UI
+    [SerializeField] Text scoreText;
+    [SerializeField] Text lifeText;
+    [SerializeField] Text timeText;
     public static int score;
     public static int life;
     public static float time;
 
+    //時間制限(今のとこ使っていない)
     float maxTime = 100;
+
+    //ステージ用
+    public static int nowStage;
+
+    [SerializeField] GameObject UI;
 
     private void Awake()
     {
@@ -36,8 +42,11 @@ public class GameDirector : MonoBehaviour
 
     void Start()
     {
+        //もしセーブを実装するなら変更
         score = 0;
         life = 5;
+        nowStage = 1;
+
         Application.targetFrameRate = 60;
     }
 
@@ -45,10 +54,10 @@ public class GameDirector : MonoBehaviour
     void Update()
     {
 
-        if (Input.GetKeyDown(KeyCode.Return))
-        {
-            SceneManager.LoadScene("GameScene");
-        }
+        //if (Input.GetKeyDown(KeyCode.Return))
+        //{
+        //    SceneManager.LoadScene("GameScene");
+        //}
 
         scoreText.text = "score:" + score.ToString("D6");
         lifeText.text = "Life:" + life.ToString("D2");
@@ -58,11 +67,11 @@ public class GameDirector : MonoBehaviour
 
         if (SceneManager.GetActiveScene().name == "DeathScene" || SceneManager.GetActiveScene().name == "TitleScene")
         {
-            gameObject.SetActive(false);
+            UI.SetActive(false);
         }
         else
         {
-            gameObject.SetActive(true);
+            UI.SetActive(true);
         }
         
 
