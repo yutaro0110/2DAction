@@ -407,6 +407,7 @@ public class PlayerController : MonoBehaviour
 
         if(transform.position.y < min.y || hBase.result == HitBase.HitResult.Die)
         {
+            die = true;
             StartCoroutine(DeathCoroutine());
         }
 
@@ -420,6 +421,14 @@ public class PlayerController : MonoBehaviour
         stop = transform.position;
         rb2d.velocity = Vector2.zero;
         bcol.enabled = false;
+        horizon = 0;
+        anim.Play("PLIdle");
+
+        foreach(Transform child in gameObject.transform)
+        {
+            Destroy(child.gameObject);
+        }
+
 
         //d—Í‚È‚­‚·(d—Í•Û‘¶)
         float g = rb2d.gravityScale;
