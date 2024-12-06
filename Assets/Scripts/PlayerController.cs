@@ -389,6 +389,7 @@ public class PlayerController : MonoBehaviour
 
         if(hBase.result == HitBase.HitResult.AtkDone && hBase.opponent == HitCheck.HitLayer.Enemy)
         {
+
             Vector3 vel = rb2d.velocity;
             EnemyStep = Input.GetButton("Jump") ? 10 : 0;
             vel.y = JumpPow / 100.0f + EnemyStep;
@@ -404,7 +405,7 @@ public class PlayerController : MonoBehaviour
 
         Vector2 min = Camera.main.ViewportToWorldPoint(Vector2.zero);
 
-        if(transform.position.y < min.y)
+        if(transform.position.y < min.y || hBase.result == HitBase.HitResult.Die)
         {
             StartCoroutine(DeathCoroutine());
         }
@@ -418,6 +419,7 @@ public class PlayerController : MonoBehaviour
         die = true;
         stop = transform.position;
         rb2d.velocity = Vector2.zero;
+        bcol.enabled = false;
 
         //d—Í‚È‚­‚·(d—Í•Û‘¶)
         float g = rb2d.gravityScale;
