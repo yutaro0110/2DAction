@@ -62,12 +62,15 @@ public class PlayerController : MonoBehaviour
 
 
     //その他
-    bool isGround;   //地面に触れているか
-    bool Goal;       //ゴール判定
-    bool move;       //動くか動かないか
-    bool die;        //死んだかどうか
-    bool dashHanten;     //ダッシュ後の反転時にスピードを残す用
-    Vector3 diestop; //死んだあとの硬直(演出用)
+    bool isGround;             //地面に触れているか
+    bool Goal;                 //ゴール判定
+    bool move;                 //動くか動かないか
+    bool die;                  //死んだかどうか
+    bool dashHanten;           //ダッシュ後の反転時にスピードを残す用
+    bool controlStop;          //反転時の操作止める
+    Vector3 diestop;           //死んだあとの硬直(演出用)
+    const int dashFrame = 5;  //反転時の猶予フレーム
+    int dashFrameCnt;          //フレームカウント
    
 
 
@@ -82,6 +85,7 @@ public class PlayerController : MonoBehaviour
         Goal = false;
         die = false;
         dieJump = JumpPow + 100.0f;
+        dashFrameCnt = 0;
     }
 
     
@@ -170,7 +174,6 @@ public class PlayerController : MonoBehaviour
         horizon = Mathf.Abs(horizon) < 0.3f ? 0 : horizon;
         if(horizon != 0)
         {
-            Debug.Log(horizon);
             horizon = horizon < 0 ? -1 : 1;
             move = true;
         }
@@ -203,7 +206,34 @@ public class PlayerController : MonoBehaviour
     //アニメーションと移動
     void AnimControl()
     {
-        
+
+
+        if (isGround)
+        {
+
+            if (horizon != 0 && !frontGround)
+            {
+                anim.Play("PLRun");
+            }
+            else
+            {
+                //止まっているとき
+                anim.Play("PLIdle");
+            }
+
+        }
+        else
+        {
+            anim.Play("PLJump");
+        }
+
+        if (horizon != 0 && controlStop == false)
+        {
+            //playerの絵を反転
+            Vector3 scale = transform.localScale;
+            scale.x = horizon < 0 ? -1 : 1;
+            transform.localScale = scale;
+        }
 
         //移動処理
 
@@ -211,6 +241,13 @@ public class PlayerController : MonoBehaviour
 
         if(horizon != 0)
         {
+            //操作できるか(反転しているか)
+            
+            if (controlStop && horizon == rb2d.velocity.x / Mathf.Abs(rb2d.velocity.x))
+            {
+                controlStop = false;
+            }
+
             Vector3 offset = new Vector3(transform.localScale.x * 0.7f, -0.3f, 0);
             Vector3 center = transform.position;
             Vector3 end = center + offset;
@@ -223,13 +260,19 @@ public class PlayerController : MonoBehaviour
             if (RunResult.collider == null)
             {
                 frontGround = false;
-                //移動状態(走りなど)を確認
-                ver = rb2d.velocity;
+                //移動状態(走りなど)を確認(これが大切!!)
                 moveCondTemp = (int)moveCond.walk;
+                ver = rb2d.velocity;
                 if (Input.GetKey("joystick button 0"))  //ダッシュ確認
                 {
                     if (horizon == rb2d.velocity.x / Mathf.Abs(rb2d.velocity.x) || rb2d.velocity.x == 0) //velocityと反対に向かったら
                     {
+
+                        if (dashHanten)
+                        {
+                            runTime = dashChangeTime;
+                        }
+
                         if (runTime < dashChangeTime)
                         {
                             if (isGround)
@@ -241,6 +284,7 @@ public class PlayerController : MonoBehaviour
                         else
                         {
                             dashHanten = true;
+                            dashFrameCnt = 0;
                             moveCondTemp = (int)moveCond.dash;
                             runTime = dashChangeTime;
                         }
@@ -252,10 +296,11 @@ public class PlayerController : MonoBehaviour
                     dashHanten = false;
                 }
 
-                //移動
-                if (horizon == rb2d.velocity.x / Mathf.Abs(rb2d.velocity.x) || rb2d.velocity.x == 0) //velocityと反対に向かったら
+                //移動処理(velocityやAddForceをする場所)(反転処理と移動処理の判断)
+                if ((horizon == rb2d.velocity.x / Mathf.Abs(rb2d.velocity.x)|| rb2d.velocity.x == 0) 
+                                                         && controlStop == false) //velocityと反対に向かったらelse
                 {
-                    //移動
+                    //普通の移動処理
                     switch (moveCondTemp)
                     {
                         case 0:
@@ -273,8 +318,14 @@ public class PlayerController : MonoBehaviour
                 }
                 else
                 {
-
                     //反転処理
+                    if(rb2d.velocity.x == 0)//velocityのXが0の時に処理を終了
+                    {
+                        return;
+                    }
+
+                    controlStop = true;
+
                     switch (underGroundObj.tag)//床の種類によって滑りを変える
                     {
                         //床の確認
@@ -298,14 +349,16 @@ public class PlayerController : MonoBehaviour
 
                             break;
                     }
-
+                    
                     rb2d.AddForce(ver);
                 }
             }
             else
             {
+                //壁にぶつかったとき
                 runTime = 0;
                 frontGround = true;
+                dashHanten = false;
             }
             
 
@@ -315,7 +368,16 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
-            dashHanten = false;
+            if (dashHanten)
+            {
+                dashFrameCnt++;
+            }
+
+            if(dashFrameCnt > dashFrame)
+            {
+                dashHanten = false;
+                dashFrameCnt = 0;
+            }
             //減速
             runTime = 0;
             if(Mathf.Abs(rb2d.velocity.x) > 0.5f)
@@ -341,45 +403,16 @@ public class PlayerController : MonoBehaviour
             }
         }
 
-        if (dashHanten)
-        {
-            runTime = dashChangeTime;
-        }
+        
 
         //急ブレーキ
         //猶予フレームの追加(コントローラーで反転時のフレームを計測する)
         //歩きの時の反転を小さくしてもいい
         //反転をどうやるか
         //デッドゾーンは必要か
-
-        if (isGround)
-        {
-            
-            if(horizon != 0 && !frontGround)
-            {
-                anim.Play("PLRun");
-            }
-            else
-            {
-                //止まっているとき
-                anim.Play("PLIdle");
-            }
-            
-        }
-        else
-        {
-            anim.Play("PLJump");
-        }
-
-        if(horizon != 0)
-        {
-            //playerの絵を反転
-            Vector3 scale = transform.localScale;
-            scale.x = horizon < 0 ? -1 : 1;
-            transform.localScale = scale;
-        }
-
-        
+        //氷の減速処理変える
+        //ダッシュ中に反転がたくさんできちゃう
+        //反転したときにvelocityがどっちの方向に力を持っているか保存する
 
     }
 
