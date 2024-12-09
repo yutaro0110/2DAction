@@ -11,6 +11,10 @@ public class Title : MonoBehaviour
 
     int posNo;
     float select;
+    bool stick;
+    float stickHz;
+    bool pushButton;
+
     Vector3[] arrowPos = 
     { 
         new Vector3(-2,-3,0),
@@ -21,6 +25,8 @@ public class Title : MonoBehaviour
     void Start()
     {
         posNo = 0;
+        stick = true;
+        pushButton = false;
     }
 
     
@@ -36,18 +42,40 @@ public class Title : MonoBehaviour
     void SelectArrow()
     {
 
-        if(Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.LeftArrow))
+
+        if (Input.GetAxisRaw("Horizontal") != 0 && stick)
         {
             posNo = posNo == 0 ? 1 : 0;
+
+            if (posNo == 0 && Input.GetAxisRaw("Horizontal") < 0)
+            {
+                return;
+            }
+            else if(posNo == 1 && Input.GetAxisRaw("Horizontal") > 0)
+            {
+                return;
+            }
+
+            posNo = posNo == 0 ? 1 : 0;
+
             arrow.transform.position = arrowPos[posNo];
+            stick = false;
         }
+        else if(Input.GetAxisRaw("Horizontal") == 0 || stickHz * Input.GetAxisRaw("Horizontal") < 0)
+        {
+            stick = true;
+        }
+
+        stickHz = Input.GetAxisRaw("Horizontal");
 
     }
 
     void SceneController()
     {
-        if(posNo == 0 && Input.GetKeyDown(KeyCode.Return))
+        //Œˆ’è&ƒV[ƒ“‘JˆÚ
+        if((posNo == 0 && Input.GetKeyDown("joystick button 1")) && !pushButton)
         {
+            pushButton = true;
             SceneManager.LoadScene(GameDirector.nowStage);
         }
     }

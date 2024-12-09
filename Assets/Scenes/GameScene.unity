@@ -120,67 +120,6 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!1001 &107605390
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 4391322182952231515, guid: 969bb083a0176fd4fb6aaecf7a05fa91, type: 3}
-      propertyPath: m_RootOrder
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 4391322182952231515, guid: 969bb083a0176fd4fb6aaecf7a05fa91, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 2.5160885
-      objectReference: {fileID: 0}
-    - target: {fileID: 4391322182952231515, guid: 969bb083a0176fd4fb6aaecf7a05fa91, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: -1.6247202
-      objectReference: {fileID: 0}
-    - target: {fileID: 4391322182952231515, guid: 969bb083a0176fd4fb6aaecf7a05fa91, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4391322182952231515, guid: 969bb083a0176fd4fb6aaecf7a05fa91, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4391322182952231515, guid: 969bb083a0176fd4fb6aaecf7a05fa91, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4391322182952231515, guid: 969bb083a0176fd4fb6aaecf7a05fa91, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4391322182952231515, guid: 969bb083a0176fd4fb6aaecf7a05fa91, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4391322182952231515, guid: 969bb083a0176fd4fb6aaecf7a05fa91, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4391322182952231515, guid: 969bb083a0176fd4fb6aaecf7a05fa91, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4391322182952231515, guid: 969bb083a0176fd4fb6aaecf7a05fa91, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5657991584996608016, guid: 969bb083a0176fd4fb6aaecf7a05fa91, type: 3}
-      propertyPath: m_Name
-      value: Enemy1
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 969bb083a0176fd4fb6aaecf7a05fa91, type: 3}
 --- !u!1001 &121364499
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -195,7 +134,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4318895057901688767, guid: 7aa39ef7781e05c4a8f8a65521b7e851, type: 3}
       propertyPath: m_RootOrder
-      value: 4
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 4318895057901688767, guid: 7aa39ef7781e05c4a8f8a65521b7e851, type: 3}
       propertyPath: m_LocalPosition.x
@@ -7238,7 +7177,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1585028447
 GameObject:
@@ -7552,7 +7491,7 @@ Transform:
   - {fileID: 1856073775}
   - {fileID: 200615355}
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1794422142
 GameObject:
@@ -7636,7 +7575,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 8
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1856073774
 GameObject:
@@ -8198,7 +8137,7 @@ Transform:
   m_Children:
   - {fileID: 2122156109}
   m_Father: {fileID: 0}
-  m_RootOrder: 7
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2138868538
 MonoBehaviour:

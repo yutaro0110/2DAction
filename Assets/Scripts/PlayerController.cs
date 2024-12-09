@@ -62,11 +62,14 @@ public class PlayerController : MonoBehaviour
 
 
     //その他
-    bool isGround;
-    bool Goal;
-    bool move;
-    bool die;
-    Vector3 stop; 
+    bool isGround;   //地面に触れているか
+    bool Goal;       //ゴール判定
+    bool move;       //動くか動かないか
+    bool die;        //死んだかどうか
+    bool dashHanten;     //ダッシュ後の反転時にスピードを残す用
+    Vector3 diestop; //死んだあとの硬直(演出用)
+   
+
 
     public float horizon;
 
@@ -90,8 +93,8 @@ public class PlayerController : MonoBehaviour
         if (die)
         {
             DeathControl();
-            stop.y = transform.position.y;
-            transform.position = stop;
+            diestop.y = transform.position.y;
+            transform.position = diestop;
 
             return;
         }
@@ -164,9 +167,11 @@ public class PlayerController : MonoBehaviour
     {
 
         horizon = Input.GetAxisRaw("Horizontal"); //コントローラーにするときに確認
-
+        horizon = Mathf.Abs(horizon) < 0.3f ? 0 : horizon;
         if(horizon != 0)
         {
+            Debug.Log(horizon);
+            horizon = horizon < 0 ? -1 : 1;
             move = true;
         }
         else
@@ -184,7 +189,7 @@ public class PlayerController : MonoBehaviour
     {
         
         //ジャンプ普通のupdateかFixedか決めるまたはFixedの方で反応がいいものを作る
-        if (Input.GetButtonDown("Jump") && isGround == true) //コントローラーにするときに確認
+        if (Input.GetKeyDown("joystick button 1") && isGround == true) //コントローラーにするときに確認
         {
             Vector2 vel = rb2d.velocity;
             vel.y = 0;
@@ -221,9 +226,9 @@ public class PlayerController : MonoBehaviour
                 //移動状態(走りなど)を確認
                 ver = rb2d.velocity;
                 moveCondTemp = (int)moveCond.walk;
-                if (Input.GetKey(KeyCode.Z))  //コントローラーにするときに変える
+                if (Input.GetKey("joystick button 0"))  //ダッシュ確認
                 {
-                    if (horizon == rb2d.velocity.x / Mathf.Abs(rb2d.velocity.x) || rb2d.velocity.x == 0)
+                    if (horizon == rb2d.velocity.x / Mathf.Abs(rb2d.velocity.x) || rb2d.velocity.x == 0) //velocityと反対に向かったら
                     {
                         if (runTime < dashChangeTime)
                         {
@@ -235,11 +240,16 @@ public class PlayerController : MonoBehaviour
                         }
                         else
                         {
+                            dashHanten = true;
                             moveCondTemp = (int)moveCond.dash;
                             runTime = dashChangeTime;
                         }
                     }
 
+                }
+                else
+                {
+                    dashHanten = false;
                 }
 
                 //移動
@@ -305,6 +315,7 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
+            dashHanten = false;
             //減速
             runTime = 0;
             if(Mathf.Abs(rb2d.velocity.x) > 0.5f)
@@ -330,11 +341,16 @@ public class PlayerController : MonoBehaviour
             }
         }
 
+        if (dashHanten)
+        {
+            runTime = dashChangeTime;
+        }
+
         //急ブレーキ
-        //目の前に壁があったら走れなくする(そっちのほうに動けなくする)
-        //「velocityの反対方向へ入力した時」という処理を入れる?
         //猶予フレームの追加(コントローラーで反転時のフレームを計測する)
         //歩きの時の反転を小さくしてもいい
+        //反転をどうやるか
+        //デッドゾーンは必要か
 
         if (isGround)
         {
@@ -359,7 +375,7 @@ public class PlayerController : MonoBehaviour
         {
             //playerの絵を反転
             Vector3 scale = transform.localScale;
-            scale.x = horizon;
+            scale.x = horizon < 0 ? -1 : 1;
             transform.localScale = scale;
         }
 
@@ -418,7 +434,7 @@ public class PlayerController : MonoBehaviour
         
         //死んだ
         die = true;
-        stop = transform.position;
+        diestop = transform.position;
         rb2d.velocity = Vector2.zero;
         bcol.enabled = false;
         horizon = 0;
@@ -443,7 +459,7 @@ public class PlayerController : MonoBehaviour
         rb2d.AddForce(Vector2.up * dieJump);
         hBase.nowHp = 0;
 
-        stop.x = transform.position.x;
+        diestop.x = transform.position.x;
 
         StopCoroutine(DeathCoroutine());
         yield break;
@@ -452,7 +468,7 @@ public class PlayerController : MonoBehaviour
 
     void DeathControl()
     {
-        if (Input.GetKeyDown(KeyCode.Return))
+        if (Input.GetKeyDown("joystick button 1"))
         {
             SceneManager.LoadScene(GameDirector.nowStage);
         }
