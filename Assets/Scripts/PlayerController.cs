@@ -30,7 +30,6 @@ public class PlayerController : MonoBehaviour
         dash,
     }
     int moveCondTemp;
-    float moveMax;
 
     Animator anim;
 
@@ -49,10 +48,14 @@ public class PlayerController : MonoBehaviour
     const float run = 5.0f;
     const float dash = 8.0f;
     const float dashChangeTime = 1.0f;
-    bool flip;
-    bool dashMidst;
     float runTime;
     bool frontGround;
+    const int dashFrame = 5;  //反転時の猶予フレーム
+    int dashFrameCnt;          //フレームカウント
+    bool dashHanten;           //ダッシュ後の反転時にスピードを残す用
+    bool controlStop;          //反転時の操作止める
+    float flipDir;                     //反転時どっちに進んでいたか保存
+
 
 
     //ジャンプ系
@@ -66,11 +69,7 @@ public class PlayerController : MonoBehaviour
     bool Goal;                 //ゴール判定
     bool move;                 //動くか動かないか
     bool die;                  //死んだかどうか
-    bool dashHanten;           //ダッシュ後の反転時にスピードを残す用
-    bool controlStop;          //反転時の操作止める
     Vector3 diestop;           //死んだあとの硬直(演出用)
-    const int dashFrame = 5;  //反転時の猶予フレーム
-    int dashFrameCnt;          //フレームカウント
    
 
 
@@ -241,12 +240,18 @@ public class PlayerController : MonoBehaviour
 
         if(horizon != 0)
         {
-            //操作できるか(反転しているか)
-            
-            if (controlStop && horizon == rb2d.velocity.x / Mathf.Abs(rb2d.velocity.x))
+            //操作できるか(急ブレーキ中か)
+            if(rb2d.velocity.x == 0)
             {
                 controlStop = false;
             }
+            else if (controlStop == true && flipDir / Mathf.Abs(flipDir) != rb2d.velocity.x / Mathf.Abs(rb2d.velocity.x))
+            {
+                
+                controlStop = false;
+                
+            }
+
 
             Vector3 offset = new Vector3(transform.localScale.x * 0.7f, -0.3f, 0);
             Vector3 center = transform.position;
@@ -324,7 +329,14 @@ public class PlayerController : MonoBehaviour
                         return;
                     }
 
+                    if(controlStop == false)
+                    {
+                        flipDir = rb2d.velocity.x;
+                    }
+
                     controlStop = true;
+
+                    if (underGroundObj == null) return;
 
                     switch (underGroundObj.tag)//床の種類によって滑りを変える
                     {
@@ -382,6 +394,7 @@ public class PlayerController : MonoBehaviour
             runTime = 0;
             if(Mathf.Abs(rb2d.velocity.x) > 0.5f)
             {
+                if (underGroundObj == null) return;
                 switch (underGroundObj.tag)//床の種類によって滑りを変える
                 {
                     case "Normal":
