@@ -7,6 +7,8 @@ public class EnemyController : MonoBehaviour
 {
     public LayerMask GroundCheck;
 
+    [SerializeField] GameObject Item;
+
     Rigidbody2D rb2d;
 
     BoxCollider2D bcol;
@@ -20,6 +22,7 @@ public class EnemyController : MonoBehaviour
     int dir;
 
     Vector3 offset = new Vector3(0.7f, 0, 0);
+    Vector3 itemPos;
 
     void Start()
     {
@@ -42,6 +45,10 @@ public class EnemyController : MonoBehaviour
         {
             float deathJump = 10.0f;
             rb2d.velocity = Vector2.up * deathJump;
+
+            itemPos = transform.position;
+            Instantiate(Item, itemPos, Quaternion.identity);
+
             bcol.enabled = false;
             //€‚ñ‚¾‚Æ‚«‚Éã‚Éã‚ª‚é‚Ì‚ğˆê“x‚¾‚¯‚É‚·‚é
 

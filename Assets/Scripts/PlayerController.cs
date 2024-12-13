@@ -11,15 +11,15 @@ public class PlayerController : MonoBehaviour
     public enum slowDown
     {
         Normal = 15,
-        Ice = 1,
+        Ice = 4,
     }
 
     public enum slowDownFlip
     {
         Normal = 20,
-        IceWalk = 3,
-        IceRun = 4,
-        IceDash = 5
+        IceWalk = 6,
+        IceRun = 8,
+        IceDash = 10
 
     }
 
@@ -197,6 +197,7 @@ public class PlayerController : MonoBehaviour
             vel.y = 0;
             rb2d.velocity = vel;
             rb2d.AddForce(Vector2.up * JumpPow);
+            controlStop = false;
         }
 
     }
@@ -226,7 +227,7 @@ public class PlayerController : MonoBehaviour
             anim.Play("PLJump");
         }
 
-        if (horizon != 0 && controlStop == false)
+        if (horizon != 0)
         {
             //player‚ÌŠG‚ğ”½“]
             Vector3 scale = transform.localScale;
@@ -240,17 +241,17 @@ public class PlayerController : MonoBehaviour
 
         if(horizon != 0)
         {
-            //‘€ì‚Å‚«‚é‚©(‹}ƒuƒŒ[ƒL’†‚©)
-            if(rb2d.velocity.x == 0)
-            {
-                controlStop = false;
-            }
-            else if (controlStop == true && flipDir / Mathf.Abs(flipDir) != rb2d.velocity.x / Mathf.Abs(rb2d.velocity.x))
-            {
+            ////‘€ì‚Å‚«‚é‚©(‹}ƒuƒŒ[ƒL’†‚©)
+            //if(rb2d.velocity.x == 0)
+            //{
+            //    controlStop = false;
+            //}
+            //else if (controlStop == true && flipDir / Mathf.Abs(flipDir) != rb2d.velocity.x / Mathf.Abs(rb2d.velocity.x))
+            //{
                 
-                controlStop = false;
+            //    controlStop = false;
                 
-            }
+            //}
 
 
             Vector3 offset = new Vector3(transform.localScale.x * 0.7f, -0.3f, 0);
@@ -303,7 +304,7 @@ public class PlayerController : MonoBehaviour
 
                 //ˆÚ“®ˆ—(velocity‚âAddForce‚ğ‚·‚éêŠ)(”½“]ˆ—‚ÆˆÚ“®ˆ—‚Ì”»’f)
                 if ((horizon == rb2d.velocity.x / Mathf.Abs(rb2d.velocity.x)|| rb2d.velocity.x == 0) 
-                                                         && controlStop == false) //velocity‚Æ”½‘Î‚ÉŒü‚©‚Á‚½‚çelse
+                                                         ) //velocity‚Æ”½‘Î‚ÉŒü‚©‚Á‚½‚çelse
                 {
                     //•’Ê‚ÌˆÚ“®ˆ—
                     switch (moveCondTemp)
@@ -324,15 +325,15 @@ public class PlayerController : MonoBehaviour
                 else
                 {
                     //”½“]ˆ—
-                    if(rb2d.velocity.x == 0)//velocity‚ÌX‚ª0‚Ì‚Éˆ—‚ğI—¹
-                    {
-                        return;
-                    }
+                    //if(rb2d.velocity.x == 0)//velocity‚ÌX‚ª0‚Ì‚Éˆ—‚ğI—¹
+                    //{
+                    //    return;
+                    //}
 
-                    if(controlStop == false)
-                    {
-                        flipDir = rb2d.velocity.x;
-                    }
+                    //if(controlStop == false)
+                    //{
+                    //    flipDir = rb2d.velocity.x;
+                    //}
 
                     controlStop = true;
 
@@ -372,10 +373,6 @@ public class PlayerController : MonoBehaviour
                 frontGround = true;
                 dashHanten = false;
             }
-            
-
-            
-            
             
         }
         else
@@ -453,7 +450,7 @@ public class PlayerController : MonoBehaviour
         {
 
             Vector3 vel = rb2d.velocity;
-            EnemyStep = Input.GetButton("Jump") ? 10 : 0;
+            EnemyStep = Input.GetKey("joystick button 1") ? 10 : 0;
             vel.y = JumpPow / 100.0f + EnemyStep;
             rb2d.velocity = vel;
             hBase.result = HitBase.HitResult.None;
