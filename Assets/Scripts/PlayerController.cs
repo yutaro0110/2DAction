@@ -62,15 +62,17 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float JumpPow;
     float dieJump;
     float EnemyStep;
+    [SerializeField] AudioSource JumpAud;
 
 
     //その他
-    bool isGround;             //地面に触れているか
-    bool Goal;                 //ゴール判定
-    bool move;                 //動くか動かないか
-    bool die;                  //死んだかどうか
-    Vector3 diestop;           //死んだあとの硬直(演出用)
-   
+    bool isGround;              //地面に触れているか
+    bool Goal;                  //ゴール判定
+    bool move;                  //動くか動かないか
+    bool die;                   //死んだかどうか
+    Vector3 diestop;            //死んだあとの硬直(演出用)
+    GameDirector DirectorFunc;  //関数使用用
+
 
 
     public float horizon;
@@ -95,7 +97,7 @@ public class PlayerController : MonoBehaviour
 
         if (die)
         {
-            DeathControl();
+            DirectorFunc.deathRestart();
             diestop.y = transform.position.y;
             transform.position = diestop;
 
@@ -197,6 +199,7 @@ public class PlayerController : MonoBehaviour
             vel.y = 0;
             rb2d.velocity = vel;
             rb2d.AddForce(Vector2.up * JumpPow);
+            JumpAud.Play();
             controlStop = false;
         }
 
@@ -476,7 +479,6 @@ public class PlayerController : MonoBehaviour
     {
         
         //死んだ
-        die = true;
         diestop = transform.position;
         rb2d.velocity = Vector2.zero;
         bcol.enabled = false;
@@ -509,12 +511,6 @@ public class PlayerController : MonoBehaviour
         
     }
 
-    void DeathControl()
-    {
-        if (Input.GetKeyDown("joystick button 1"))
-        {
-            SceneManager.LoadScene(GameDirector.nowStage);
-        }
-    }
+    
 
 }

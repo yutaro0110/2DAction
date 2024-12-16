@@ -76,6 +76,7 @@ public class Title : MonoBehaviour
         if((posNo == 0 && Input.GetKeyDown("joystick button 1")) && !pushButton)
         {
             pushButton = true;
+            GameDirector.nowStage++;
             SceneManager.LoadScene(GameDirector.nowStage);
         }
     }

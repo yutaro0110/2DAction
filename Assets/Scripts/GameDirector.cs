@@ -26,6 +26,8 @@ public class GameDirector : MonoBehaviour
 
     [SerializeField] GameObject UI;
 
+    [SerializeField] AudioSource[] aud;
+
     private void Awake()
     {
         time = maxTime;
@@ -45,7 +47,11 @@ public class GameDirector : MonoBehaviour
         //もしセーブを実装するなら変更
         score = 0;
         life = 5;
-        nowStage = 1;
+        nowStage = 0;
+        aud[nowStage].Play();
+
+        //ロード時の処理を追加
+        SceneManager.sceneLoaded += audioManager;
 
         Application.targetFrameRate = 60;
     }
@@ -76,4 +82,40 @@ public class GameDirector : MonoBehaviour
         
 
     }
+
+    //ロードするときの処理
+    void audioManager(Scene scene, LoadSceneMode mode)
+    {
+        AudioSource audHz = null;
+        for (int i = 0; i < aud.Length; i++)
+        {
+            //シーンによって曲を変える
+            if(nowStage == i)
+            {
+                aud[i].Play();
+
+                //保存して止められないようにする
+                audHz = aud[i];
+            }
+            else
+            {
+                if (audHz != aud[i])
+                {
+                    aud[i].Stop();
+                    Debug.Log(i);
+                }
+            }
+        }
+    }
+
+    public void deathRestart()
+    {
+
+        if (Input.GetKeyDown("joystick button 1"))
+        {
+            SceneManager.LoadScene(nowStage);
+        }
+
+    }
+
 }
