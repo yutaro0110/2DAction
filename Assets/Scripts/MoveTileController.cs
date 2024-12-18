@@ -51,7 +51,17 @@ public class MoveTileController : MonoBehaviour
 
     }
 
-    
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        
+        if(collision.tag == "Player")
+        {
+            collision.gameObject.transform.SetParent(gameObject.transform);
+        }
+
+    }
+
+
     void Update()
     {
 

@@ -24,6 +24,8 @@ public class EnemyController : MonoBehaviour
     Vector3 offset = new Vector3(0.7f, 0, 0);
     Vector3 itemPos;
 
+    bool move;
+
     void Start()
     {
 
@@ -36,9 +38,29 @@ public class EnemyController : MonoBehaviour
 
     }
 
-    
+    const string MainCameratag = "MainCamera";
+
+    //カメラに写ったら
+    private void OnWillRenderObject()
+    {
+        if (UnityEngine.Camera.current.tag == MainCameratag)
+        {
+            move = true;   //カメラに写ったらフラグをオン
+        }
+    }
+
+
     void Update()
     {
+        if(transform.position.y < -50)
+        {
+            Destroy(gameObject);
+        }
+
+        if (FadeManager.Instance.IsFading() == true) return;
+
+        if (!move) return;
+
         if (bcol.enabled == false) return;
         //死んだときの処理
         if (hBase.result == HitBase.HitResult.Die && bcol.enabled == true)

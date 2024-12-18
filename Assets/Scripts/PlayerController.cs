@@ -1,8 +1,9 @@
 using System.Collections;
-using System.Collections.Generic;
-using TreeEditor;
-using Unity.VisualScripting;
-using UnityEditor;
+//using System.Collections.Generic;
+//using System.Runtime.ConstrainedExecution;
+//using TreeEditor;
+//using Unity.VisualScripting;
+//using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -17,7 +18,7 @@ public class PlayerController : MonoBehaviour
     public enum slowDownFlip
     {
         Normal = 20,
-        IceWalk = 6,
+        IceWalk = 5,
         IceRun = 8,
         IceDash = 10
 
@@ -67,7 +68,7 @@ public class PlayerController : MonoBehaviour
 
     //その他
     bool isGround;              //地面に触れているか
-    bool Goal;                  //ゴール判定
+    public bool Goal;                  //ゴール判定
     bool move;                  //動くか動かないか
     bool die;                   //死んだかどうか
     Vector3 diestop;            //死んだあとの硬直(演出用)
@@ -76,9 +77,11 @@ public class PlayerController : MonoBehaviour
 
 
     public float horizon;
+    Vector2 clearWalk;
 
     void Start()
     {
+        DirectorFunc = GameObject.Find("GameDirector (1)").GetComponent<GameDirector>();
         anim = GetComponent<Animator>();
         rb2d = GetComponent<Rigidbody2D>();
         bcol = GetComponent<BoxCollider2D>();
@@ -87,22 +90,34 @@ public class PlayerController : MonoBehaviour
         die = false;
         dieJump = JumpPow + 100.0f;
         dashFrameCnt = 0;
+        clearWalk = new Vector2(walk, 0);
     }
 
     
     void Update()
     {
 
-        if (Goal) return;
+        if (Goal)
+        {
+            anim.Play("PLRun");
+
+            rb2d.velocity = clearWalk;
+            
+            return;
+        }
 
         if (die)
         {
-            DirectorFunc.deathRestart();
+            DirectorFunc.SceneChange((int)GameDirector.cond.Death);
             diestop.y = transform.position.y;
             transform.position = diestop;
 
             return;
         }
+
+        //シーン遷移中は移動不可
+        if (FadeManager.Instance.IsFading() == true) return;
+
 
         //地面についてるか
         GroundCheck();
@@ -418,14 +433,8 @@ public class PlayerController : MonoBehaviour
 
         
 
-        //急ブレーキ
-        //猶予フレームの追加(コントローラーで反転時のフレームを計測する)
         //歩きの時の反転を小さくしてもいい
-        //反転をどうやるか
-        //デッドゾーンは必要か
         //氷の減速処理変える
-        //ダッシュ中に反転がたくさんできちゃう
-        //反転したときにvelocityがどっちの方向に力を持っているか保存する
 
     }
 
@@ -441,7 +450,8 @@ public class PlayerController : MonoBehaviour
             Debug.Log("ゴール");
             Goal = true;
             GameDirector.nowStage++;
-            SceneManager.LoadScene(GameDirector.nowStage);
+
+            DirectorFunc.SceneChange((int)GameDirector.cond.Goal);
         }
     }
 
@@ -467,7 +477,7 @@ public class PlayerController : MonoBehaviour
 
         Vector2 min = Camera.main.ViewportToWorldPoint(Vector2.zero);
 
-        if(transform.position.y < min.y || hBase.result == HitBase.HitResult.Die)
+        if(transform.position.y < min.y || hBase.result == HitBase.HitResult.Die || GameDirector.time <= 0)
         {
             die = true;
             StartCoroutine(DeathCoroutine());

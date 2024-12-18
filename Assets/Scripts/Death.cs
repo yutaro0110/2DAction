@@ -7,21 +7,24 @@ using UnityEngine.UI;
 public class Death : MonoBehaviour
 {
 
-    public Text lifeText;
     public Text scoreText;
+
+    GameDirector DirectorFunc;
+
     void Start()
     {
-
-        GameDirector.life--;
+        GameDirector.score = GameDirector.score - 100 < 0 ? 0 : GameDirector.score - 100;
 
         scoreText.text = "score:" + GameDirector.score.ToString("D6");
-        lifeText.text = "Life:" + GameDirector.life.ToString("D2");
 
+        DirectorFunc = GameObject.Find("GameDirector (1)").GetComponent<GameDirector>();
+
+        
     }
 
     
     void Update()
     {
-        
+        DirectorFunc.SceneChange((int)GameDirector.cond.Return);
     }
 }

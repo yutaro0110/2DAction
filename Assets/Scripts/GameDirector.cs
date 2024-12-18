@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -8,14 +9,29 @@ public class GameDirector : MonoBehaviour
 {
     static GameDirector instance;
 
+    public static string[] sceneName =
+    {
+        "TitleScene",
+        "GameScene",
+        "GameScene2",
+        "GameScene3",
+        "DeathScene",
+    };
+
+    public enum cond
+    {
+        None,
+        Death,
+        Return,
+        Goal,
+    }
+
     public static GameDirector Instance => instance;
 
     //UI
     [SerializeField] Text scoreText;
-    [SerializeField] Text lifeText;
     [SerializeField] Text timeText;
     public static int score;
-    public static int life;
     public static float time;
 
     //時間制限(今のとこ使っていない)
@@ -23,10 +39,17 @@ public class GameDirector : MonoBehaviour
 
     //ステージ用
     public static int nowStage;
+    int nowStageTemp;
 
     [SerializeField] GameObject UI;
 
     [SerializeField] AudioSource[] aud;
+    [SerializeField] AudioSource button;
+    [SerializeField] AudioSource death;
+
+
+    float timer;
+    const float circleSpeed = 22.0f;
 
     private void Awake()
     {
@@ -46,7 +69,6 @@ public class GameDirector : MonoBehaviour
     {
         //もしセーブを実装するなら変更
         score = 0;
-        life = 5;
         nowStage = 0;
         aud[nowStage].Play();
 
@@ -54,19 +76,18 @@ public class GameDirector : MonoBehaviour
         SceneManager.sceneLoaded += audioManager;
 
         Application.targetFrameRate = 60;
+
+
+
     }
 
 
     void Update()
     {
 
-        //if (Input.GetKeyDown(KeyCode.Return))
-        //{
-        //    SceneManager.LoadScene("GameScene");
-        //}
+        if (FadeManager.Instance.IsFading() != false) return;
 
         scoreText.text = "score:" + score.ToString("D6");
-        lifeText.text = "Life:" + life.ToString("D2");
 
         time -= Time.deltaTime;
         timeText.text = "Time:" + time.ToString("000");
@@ -108,14 +129,41 @@ public class GameDirector : MonoBehaviour
         }
     }
 
-    public void deathRestart()
+    public void SceneChange(int condition)
     {
 
-        if (Input.GetKeyDown("joystick button 1"))
+        // フェード中じゃないかチェック
+        if (FadeManager.Instance.IsFading() == false)
         {
-            SceneManager.LoadScene(nowStage);
+            string nextScene;
+
+            UI.SetActive(false);
+
+            if(condition == (int)cond.Death)
+            {
+                death.Play();
+                nextScene = sceneName[4];
+            }
+            else
+            {
+                button.Play();
+                if(nowStage >= sceneName.Length - 1)
+                {
+                    nowStage = 0;
+                }
+                nextScene = sceneName[nowStage];
+            }
+
+            // フェードアウトして、シーン変更
+            // 引数にシーン名、フェード秒数を設定
+            FadeManager.Instance.LoadScene(nextScene, 3.0f);
+            
         }
 
     }
+
+    
+
+    
 
 }
