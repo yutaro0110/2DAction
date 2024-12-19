@@ -22,12 +22,12 @@ public class MoveTileController : MonoBehaviour
     float offset;
     [SerializeField] float length;
     [SerializeField] float time;
+    [SerializeField] int dir;
     float t;
-    float shift;
+    [SerializeField] float shift;
 
     void Start()
     {
-        shift = 0.25f;
         offset = length / 2.0f;
         
 
@@ -49,16 +49,21 @@ public class MoveTileController : MonoBehaviour
                 break;
         }
 
+        startPos.x -= length / 2.0f;
+
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        
-        if(collision.tag == "Player")
+        if (collision.tag == "Foot")
         {
-            collision.gameObject.transform.SetParent(gameObject.transform);
+            collision.transform.parent.SetParent(transform);
         }
+    }
 
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        collision.transform.parent.SetParent(null);
     }
 
 
@@ -85,8 +90,8 @@ public class MoveTileController : MonoBehaviour
 
     void horizonControl()
     {
-        t = 4.0f * length * (Time.time / time + shift);
-        ver.x = Mathf.PingPong(t, 2.0f * length) - offset;
+        t = 4.0f * length * (Time.time / time + shift + 0.25f);
+        ver.x = (Mathf.PingPong(t, 2.0f * length) - offset);
         transform.position = ver + startPos;
     }
 

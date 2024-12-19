@@ -79,6 +79,10 @@ public class Title : MonoBehaviour
             GameDirector.nowStage++;
             SceneManager.LoadScene(GameDirector.nowStage);
         }
+        else if((posNo == 1 && Input.GetKeyDown("joystick button 1")) && !pushButton)
+        {
+            UnityEngine.Application.Quit();
+        }
     }
 
 }
